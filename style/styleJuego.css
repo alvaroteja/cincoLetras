@@ -1,0 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    border: none;
+    outline: none;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#contenedorJuego {
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 0px 13px 4px rgba(230, 230, 230, 1);
+
+    /* margin: auto; */
+}
+
+.fila {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    padding: 5px;
+}
+
+.letra {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    text-align: center;
+    font-size: 30px;
+    font-family: "Signika", sans-serif;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(201, 201, 201);
+    border-radius: 5px;
+}
+div > .letra {
+    line-height: 1.7;
+}
+
+.letraCorrecta {
+    background-color: rgb(122, 214, 163);
+    border-style: none;
+}
+
+.letraCoincidente {
+    background-color: rgb(247, 245, 144);
+    border-style: none;
+}
+
+.letraErronea {
+    background-color: rgb(175, 175, 175);
+    border-style: none;
+}
+
+.filaTurnoActual > input {
+    box-shadow: 0px 0px 3px 1px rgba(137, 233, 108, 0.404);
+}
+.letraFocus {
+    border-style: solid;
+    border-width: 3px;
+    border-color: rgba(123, 187, 133, 0.911);
+}
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#botonEnviar {
+    font-size: 17px;
+    cursor: pointer;
+    line-height: 0;
+    background-color: white;
+    width: 100px;
+    height: 40px;
+    margin-top: 30px;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 13px 4px rgba(230, 230, 230, 1);
+    transition: all 0.3s;
+}
+
+#botonEnviar:hover {
+    scale: 1.1;
+    background-color: white;
+    margin-top: 30px;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 13px 4px rgba(230, 230, 230, 1);
+}
