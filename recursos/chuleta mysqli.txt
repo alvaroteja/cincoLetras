@@ -1,0 +1,22 @@
+$conexion = conectarBD();
+
+$consulta = "SELECT alias, nombre from usuarios WHERE alias='AlvaroTeja'";
+$resultado = $conexion->query($consulta);
+$registro = $resultado->fetch_assoc();
+print_r($registro);
+
+echo $resultado->num_rows;
+
+
+
+for ($i = 0; $i < $resultado->num_rows; $i++) {
+    $registro = $resultado->fetch_assoc();
+    print_r($registro);
+    echo "<br>";
+}
+
+
+while ($registro = $resultado->fetch_assoc()) {
+    print_r($registro);
+    echo "<br>";
+}

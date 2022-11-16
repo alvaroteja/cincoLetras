@@ -1,6 +1,5 @@
 <?php
 include 'funcionesBD.php';
+echo "<pre>";
 $conexion = conectarBD();
-echo "<br/><br/><br/>";
-echo validarAliasContrasena('AlvaroTeja', 'Abcd123!', $conexion);
-echo "<br/><br/><br/>";
+echo contarPuntosAlmacenados('ruben1', $conexion);

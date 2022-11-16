@@ -6,7 +6,12 @@ function conectarBD()
     $password = "";
     $basededatos = "cincoLetras";
     try {
-        $conexion = new PDO("mysql:host=$hostname;dbname=$basededatos", $usuario, $password);
+        $conexion = new mysqli($hostname, $usuario, $password, $basededatos);
+        if ($conexion->connect_errno) {
+            echo "Fallo al conectar a MySQL: (" . $conexion->connect_errno . ") " . $conexion->connect_error;
+            return false;
+        }
+
         return $conexion;
     } catch (PDOException $e) {
         print "¡Error!: " . $e->getMessage() . "<br/>";
@@ -26,9 +31,9 @@ function existeUsuario($alias, $conexion)
     $consulta = "SELECT alias from usuarios WHERE alias='$alias'";
     $resultado = $conexion->query($consulta);
 
-    if ($resultado->rowCount() == 0) {
+    if ($resultado->num_rows == 0) {
         return false;
-    } else if ($resultado->rowCount() == 1) {
+    } else if ($resultado->num_rows == 1) {
         return true;
     } else {
         $error = "Error al validar usuario";
@@ -53,4 +58,52 @@ function validarAliasContrasena($aliasIntroducido, $contrasenaIntroducida, $cone
     } else {
         return false;
     }
+}
+
+function contarPartidasAlmacenadas($alias, $conexion)
+{
+    $ins = "SELECT count(*) FROM `partidas` WHERE jugador ='$alias'";
+    $query = $conexion->query($ins);
+    $resultado = $query->fetch_assoc();
+    return $resultado['count(*)'];
+}
+function contarPuntosAlmacenados($alias, $conexion)
+{
+    $ins = "SELECT puntos FROM `partidas` WHERE jugador ='$alias'";
+    $query = $conexion->query($ins);
+    $puntos = [];
+    while ($registro = $query->fetch_assoc()) {
+        array_push($puntos, $registro['puntos']);
+    }
+    return array_sum($puntos);
+}
+
+function crearRegistroPartidaAleatoria($conexion)
+{
+    $jugador = "";
+    $puntos = (random_int(0, 6) * 100);
+    $intentos = 10 - ($puntos / 100) - 3;
+    if ($intentos > 6) $intentos = 6;
+    $puntos == 0 ? $partidaGanada = false : $partidaGanada = true;
+    $fecha = "";
+
+    //saca todos los alias y escoge uno al azar
+    $consulta = "SELECT alias from usuarios";
+    $resultado = $conexion->query($consulta);
+    //$registro = $resultado->fetch_assoc();
+    $alias = [];
+    while ($registro = $resultado->fetch_assoc()) {
+        array_push($alias, $registro['alias']);
+    }
+    $random = random_int(0, (count($alias) - 1));
+    $jugador = $alias[$random];
+
+    //crea fecha al azar
+    $mes = random_int(1, 12);
+    $dia = random_int(1, 29);
+    $fecha = "2022-" . $mes . "-" . $dia;
+
+
+    $ins = "INSERT INTO partidas (id, jugador, partidaGanada, puntos, intentos, fecha) VALUES (NULL, '$jugador', '$partidaGanada', '$puntos', '$intentos', '$fecha')";
+    $query = $conexion->query($ins);
 }

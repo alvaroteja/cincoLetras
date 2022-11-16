@@ -13,10 +13,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         array("", "", "", "", ""),
     );
     $ronda = 0;
-    echo "La ronda es: " . $ronda . "<br/>";
-    echo "<pre>";
-    print_r($letrasIntroducidas);
-    echo "<br/></pre>";
+    // echo "La ronda es: " . $ronda . "<br/>";
+    // echo "<pre>";
+    // print_r($letrasIntroducidas);
+    // echo "<br/></pre>";
 }
 ?>
 <!DOCTYPE html>
@@ -35,6 +35,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
+    <div id="datos">
+        <div id="puntos">
+            <div id="puntosSesion">
+                <h3 class="info">PUNTOS DE SESIÓN: </h3>
+                <h3 class="numero">300</h3>
+            </div>
+            <div id="puntosAcumulados">
+                <h3 class="info">PUNTOS ACUMULADOS: </h3>
+                <h3 class="numero">74700</h3>
+            </div>
+        </div>
+        <div id="partidas">
+            <div id="partidasSesion">
+                <h3 class="info">PARTIDAS DE SESIÓN: </h3>
+                <h3 class="numero">3</h3>
+            </div>
+            <div id="partidasAcumuladas">
+                <h3 class="info">PARTIDAS ACUMULADAS: </h3>
+                <h3 class="numero">245</h3>
+            </div>
+        </div>
+    </div>
     <form action="" method="POST">
         <div id="contenedorJuego" class="contenedor">
 
