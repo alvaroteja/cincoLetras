@@ -15,9 +15,6 @@ $contrasenaValido = true;
 $listaErrores = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // echo "<pre>";
-    // print_r($_POST);
-    // echo "</pre>";
     $alias = $_POST['alias'];
     $nombre = $_POST['nombre'];
     $apellido = $_POST['apellido'];
@@ -81,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="text" name='edad' value="<?php echo $edad ?>" onkeydown="return /[0-9]/i.test(event.key)" />
             </div>
             <div class='inputCompleto <?php if (!$contrasenaValido) echo 'campoInvalido'; ?>'><label for='contrasena'>Contraseña</label>
-                <input type=" password" name='contrasena' value="<?php echo $contrasena ?>" />
+                <input type="password" name='contrasena' value="<?php echo $contrasena ?>" />
             </div>
         </div>
         <div id="CajaBotonLinkLogin">

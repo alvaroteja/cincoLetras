@@ -8,9 +8,6 @@ $contrasenaValido = true;
 $listaErrores = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
     $alias = $_POST['alias'];
     $contrasena = $_POST['contrasena'];
 
@@ -28,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($listaErrores == "") {
 
         include 'funcionesBD.php';
+        include 'funcionesSesionCookies.php';
         $conexion = conectarBD();
         if ($conexion) {
             $usuarioValido = validarAliasContrasena($alias, $contrasena, $conexion);
@@ -39,6 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($conexion && $usuarioValido) {
             session_start();
             $_SESSION['alias'] = $_POST['alias'];
+            // $_SESSION['intento'] = 1;
+            crearCookie('puntosDeSesion', 0);
+            crearCookie('partidasDeSesion', 0);
             header("Location: index.php");
         }
     }

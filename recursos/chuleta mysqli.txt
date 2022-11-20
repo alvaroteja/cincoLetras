@@ -20,3 +20,9 @@ while ($registro = $resultado->fetch_assoc()) {
     print_r($registro);
     echo "<br>";
 }
+
+
+foreach ($resultado as $usuario) {
+    print_r($usuario);
+    echo $usuario['alias'];
+}

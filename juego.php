@@ -1,23 +1,68 @@
 <?php
 include 'funcionesPintado.php';
+include 'funcionesBD.php';
+include 'funcionesSesionCookies.php';
+include 'funcionesValidarArrays.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    print_r($_POST);
+session_start();
+
+if (isset($_SESSION['alias'])) {
+    $alias = "";
+    $mensajeErrores = "";
+    $puntosDeSesion = 0;
+    $partidasDeSesion = 0;
+    $intento = 1;
+    $letrasIntroducidas = $_SESSION['letrasIntroducidas'];
+    $alias = $_SESSION['alias'];
+    $conexion = conectarBD();
+    $puntosAcumulados = contarPuntosAlmacenados($alias, $conexion);
+    $partidasAcumuladas = contarPartidasAlmacenadas($alias, $conexion);
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        $intento = $_SESSION['intento'];
+        if (letrasIntroducidasValidas()) {
+            $_SESSION['intento']++;
+            //capturo las letras del post en $letras introducidas
+            if ($intento <= 6) {
+                for ($i = 0; $i < 5; $i++) {
+                    $letrasIntroducidas[$intento - 1][$i] = strtolower($_POST['letra' . ($i)]);
+                }
+            }
+            //actualizo letrasIntroducidas de la sesion
+            $_SESSION['letrasIntroducidas'] = $letrasIntroducidas;
+
+            if (palabraAcertada()) {
+                //actualizar los puntos de sesion con $puntosPartida
+                crearCookie('puntosDeSesion', $_COOKIE['puntosDeSesion'] + (700 - (($_SESSION['intento'] - 1) * 100)));
+                //guardar la partida en la base de datos con sus puntos, intentos...
+                $conexion = conectarBD();
+                crearRegistroPartida($conexion, 1);
+
+                header("Location: partidaGanada.php");
+            }
+            if ($_SESSION['intento'] >= 7 && !palabraAcertada()) {
+                //guardar la partida en la base de datos como perdida
+                $conexion = conectarBD();
+                crearRegistroPartida($conexion, 0);
+                header("Location: partidaPerdida.php");
+            }
+        } else {
+            $mensajeErrores = "Rellena todas las casillas verdes con una única letra";
+        }
+    }
+    try {
+        $puntosDeSesion = $_COOKIE['puntosDeSesion'];
+        $partidasDeSesion = $_COOKIE['partidasDeSesion'];
+        $puntosPartida = 700 - ($_SESSION['intento'] * 100);
+    } catch (\Throwable $th) {
+        echo "Ha ocurrido un error con las cookies";
+        echo $th;
+    }
 } else {
-    $letrasIntroducidas =  array(
-        array("", "", "", "", ""),
-        array("", "", "", "Q", ""),
-        array("", "D", "", "", ""),
-        array("", "", "W", "", ""),
-        array("", "Z", "", "", ""),
-        array("", "", "", "", ""),
-    );
-    $ronda = 0;
-    // echo "La ronda es: " . $ronda . "<br/>";
-    // echo "<pre>";
-    // print_r($letrasIntroducidas);
-    // echo "<br/></pre>";
+    header("Location: login.php");
 }
+//echo "palabra = " . $_COOKIE['palabra'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,49 +84,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="puntos">
             <div id="puntosSesion">
                 <h3 class="info">PUNTOS DE SESIÓN: </h3>
-                <h3 class="numero">300</h3>
+                <h3 class="numero"><?php echo $puntosDeSesion ?></h3>
             </div>
             <div id="puntosAcumulados">
                 <h3 class="info">PUNTOS ACUMULADOS: </h3>
-                <h3 class="numero">74700</h3>
+                <h3 class="numero"><?php echo $puntosAcumulados ?></h3>
             </div>
         </div>
         <div id="partidas">
             <div id="partidasSesion">
                 <h3 class="info">PARTIDAS DE SESIÓN: </h3>
-                <h3 class="numero">3</h3>
+                <h3 class="numero"><?php echo $partidasDeSesion ?></h3>
             </div>
             <div id="partidasAcumuladas">
                 <h3 class="info">PARTIDAS ACUMULADAS: </h3>
-                <h3 class="numero">245</h3>
+                <h3 class="numero"><?php echo $partidasAcumuladas ?></h3>
             </div>
         </div>
     </div>
-    <form action="" method="POST">
+    <div id="botonesVolverAJugarYLogout">
+        <a href="nuevaPartida.php">Partida Nueva</a>
+        <a href="logout.php">Logout</a>
+    </div>
+    <p id="mensajeErrores"><?php echo $mensajeErrores ?></p>
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
         <div id="contenedorJuego" class="contenedor">
 
-            <div id="fila1" class="fila filaTurnoActual">
-                <?php pintarCajasInput(0); ?>
-            </div>
-            <div id="fila2" class="fila">
-                <?php pintarCajasDiv(1, $letrasIntroducidas); ?>
-            </div>
-            <div id="fila3" class="fila">
-                <?php pintarCajasDiv(2, $letrasIntroducidas); ?>
-            </div>
-            <div id="fila4" class="fila">
-                <?php pintarCajasDiv(3, $letrasIntroducidas); ?>
-            </div>
-            <div id="fila5" class="fila">
-                <?php pintarCajasDiv(4, $letrasIntroducidas); ?>
-            </div>
-            <div id="fila6" class="fila">
-                <?php pintarCajasDiv(5, $letrasIntroducidas); ?>
-            </div>
+            <?php pintarFila($letrasIntroducidas); ?>
 
         </div>
-        <input type="submit" id="botonEnviar">
+        <div id="cajaPuntosBoton">
+            <div id="puntosDePartida">
+                <p id="puntosPartidaTexto">PUNTOS PARTIDA:</p>
+                <p id="puntosPartidaNumeros"><?php echo $puntosPartida ?></p>
+            </div>
+            <input type="submit" id="botonEnviar">
+        </div>
     </form>
+    <?php
+    ?>
 </body>
 
 </html>

@@ -78,6 +78,21 @@ function contarPuntosAlmacenados($alias, $conexion)
     return array_sum($puntos);
 }
 
+function crearRegistroPartida($conexion, $partidaGanada)
+{
+    $jugador = $_SESSION['alias'];
+    if ($partidaGanada == 1) {
+        $puntos =  700 - (($_SESSION['intento'] - 1) * 100);
+    } else {
+        $puntos = 0;
+    }
+    $intentos = $_SESSION['intento'] - 1;
+    $fecha = date('Y-m-d');
+
+    $ins = "INSERT INTO partidas (id, jugador, partidaGanada, puntos, intentos, fecha) VALUES (NULL, '$jugador', '$partidaGanada', '$puntos', '$intentos', '$fecha')";
+    $query = $conexion->query($ins);
+}
+
 function crearRegistroPartidaAleatoria($conexion)
 {
     $jugador = "";
@@ -106,4 +121,22 @@ function crearRegistroPartidaAleatoria($conexion)
 
     $ins = "INSERT INTO partidas (id, jugador, partidaGanada, puntos, intentos, fecha) VALUES (NULL, '$jugador', '$partidaGanada', '$puntos', '$intentos', '$fecha')";
     $query = $conexion->query($ins);
+}
+
+function seleccionarParlabra($conexion)
+{
+    // cuento cuantas palabras hay
+    $ins = "SELECT count(*) FROM palabras";
+    $query = $conexion->query($ins);
+    $resultado = $query->fetch_assoc();
+    $cantidadDePalabras = $resultado['count(*)'];
+
+    $random = random_int(1, $cantidadDePalabras);
+    echo $random;
+
+    $ins = "SELECT palabra FROM palabras where id='$random'";
+    $query = $conexion->query($ins);
+    $resultado = $query->fetch_assoc();
+
+    return $resultado['palabra'];
 }
