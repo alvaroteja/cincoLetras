@@ -17,6 +17,7 @@ if (isset($_SESSION['alias'])) {
     $conexion = conectarBD();
     $puntosAcumulados = contarPuntosAlmacenados($alias, $conexion);
     $partidasAcumuladas = contarPartidasAlmacenadas($alias, $conexion);
+    mysqli_close($conexion);
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -38,6 +39,7 @@ if (isset($_SESSION['alias'])) {
                 //guardar la partida en la base de datos con sus puntos, intentos...
                 $conexion = conectarBD();
                 crearRegistroPartida($conexion, 1);
+                mysqli_close($conexion);
 
                 header("Location: partidaGanada.php");
             }
@@ -45,6 +47,7 @@ if (isset($_SESSION['alias'])) {
                 //guardar la partida en la base de datos como perdida
                 $conexion = conectarBD();
                 crearRegistroPartida($conexion, 0);
+                mysqli_close($conexion);
                 header("Location: partidaPerdida.php");
             }
         } else {

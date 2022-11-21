@@ -1,0 +1,20 @@
+@import url(style.css);
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    font-family: "Signika", sans-serif;
+}
+a {
+    margin-top: 50px;
+}
+.contenedor {
+    text-align: center;
+    width: 300px !important;
+}
+.contenedor > h2 > b {
+    color: rgb(122, 214, 163);
+}

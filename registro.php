@@ -38,8 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($conexion && !$existeUsuario) {
             insertarDatosregistro($alias, $nombre, $apellido, $email, $edad, $contrasena, $conexion);
+            mysqli_close($conexion);
             header('Location: login.php');
         }
+        mysqli_close($conexion);
     }
 }
 ?>

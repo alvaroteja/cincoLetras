@@ -40,6 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // $_SESSION['intento'] = 1;
             crearCookie('puntosDeSesion', 0);
             crearCookie('partidasDeSesion', 0);
+            mysqli_close($conexion);
             header("Location: index.php");
         }
     }

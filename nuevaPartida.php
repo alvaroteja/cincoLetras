@@ -10,6 +10,7 @@ if (isset($_SESSION['alias'])) {
     $_SESSION['intento'] = 1;
     $conexion = conectarBD();
     $palabra = seleccionarParlabra($conexion);
+    mysqli_close($conexion);
     crearCookie('palabra', $palabra);
     crearCookie('partidasDeSesion', $_COOKIE['partidasDeSesion'] + 1);
 
