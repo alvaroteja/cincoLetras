@@ -15,6 +15,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 100px 0;
 }
 #contenedorJuego {
     margin-top: 0px;
